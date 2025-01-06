@@ -1,0 +1,20 @@
+from django.db import models
+
+class Transaction(models.Model):
+    category = models.CharField(max_length=50)
+    merchant = models.CharField(max_length=100)
+    amt = models.FloatField()
+    gender = models.CharField(max_length=10)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=50)
+    zip = models.IntegerField()
+    lat = models.FloatField()
+    long = models.FloatField()
+    city_pop = models.IntegerField()
+    job = models.CharField(max_length=100)
+    age = models.IntegerField()
+    unix_time = models.BigIntegerField()
+    merch_lat = models.FloatField()
+    merch_long = models.FloatField()
+    is_fraud = models.BooleanField()
+    fraud_probability = models.FloatField()

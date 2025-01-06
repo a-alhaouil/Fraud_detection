@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Fraud Detection{% endblock %}
+
+{% block content %}
+<div class="home-container">
+
+    <!-- Banner Section -->
+    <div class="banner-section d-flex flex-column justify-content-center align-items-center text-center">
+        <h1 class="display-4 fw-bold mb-3">Creadit Card Securely & Confidently!</h1>
+        <p class="lead mb-4">Ensure your transactions are safe while enjoying flexible payment options..</p>
+
+    {% load static %}
+    <div id="threejs-container" style="width: 100%; height: 500px;">
+    <!-- 3D Model Viewer -->
+    <model-viewer
+        src="{% static 'models/credit_card.glbv=2' %}"
+        alt="A 3D model of a credit card"
+        auto-rotate
+        camera-controls
+        style="width: 100%; height: 500px;">
+    </model-viewer>
+    </div>
+        <div class="button-container">
+            <a href="{% url 'predict_fraud' %}" class="cta-button">
+                Get Started! <span class="arrow-icon">→</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Credit Card Section -->
+    <div class="cards-section d-flex justify-content-center align-items-center mt-5">
+<!--        <img src="{% static 'images/imagee.jpg' %}" alt="Credit Card 1" class="card-image mx-2">-->
+<!--        <img src="{% static 'images/image.jpg' %}" alt="Credit Card 2" class="card-image mx-2">-->
+    </div>
+</div>
+<script>
+    // Scene, Camera, Renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 500, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, 500);
+    document.getElementById('threejs-container').appendChild(renderer.domElement);
+
+    // Light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+
+    // Load 3D Model
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+        '/static/models/credit_card.glbv=2', // Path to your 3D model
+        function (gltf) {
+            const model = gltf.scene;
+            model.scale.set(2, 2, 2); // Scale the model
+            model.position.set(0, 0, 0); // Position the model
+            // model.rotation.set(0, Math.PI, 0); // Adjust rotation to ensure the front is displayed
+            scene.add(model);
+            // Dynamically inspect and correct rotation
+            console.log('Initial Rotation:', model.rotation);
+            // Uncomment the following to adjust manually
+            model.rotation.y = Math.PI; // Flip the model 180 degrees
+
+            const axesHelper = new THREE.AxesHelper(5);
+            scene.add(axesHelper);
+        },
+        undefined,
+        function (error) {
+            console.error('Error loading model:', error);
+        }
+    );
+
+    // Camera Position
+    camera.position.z = 500; // Set camera further away to view the model from the front
+    camera.position.y = 2; // Align the camera height with the model's center
+    camera.lookAt(0, 0, 0); // Ensure the camera looks directly at the model
+    // Animation Loop
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // Add Interaction (Click to Rotate)
+    document.getElementById('threejs-container').addEventListener('click', function () {
+        scene.rotation.y += 0.1; // Rotate the model when clicked
+    });
+
+    // Resize Handling
+    window.addEventListener('resize', function () {
+        const width = window.innerWidth;
+        const height = 500;
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    });
+</script>
+
+{% endblock %}

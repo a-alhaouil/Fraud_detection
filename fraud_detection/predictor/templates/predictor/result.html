@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Fraud Detection Result{% endblock %}
+
+{% block content %}
+    {% load static %}
+
+    <div class="container mt-5">
+        <h1 class="text-center">Fraud Detection Result</h1>
+        <div class="card mt-4 p-4 shadow-lg">
+            <h2>Prediction</h2>
+            <p><strong>Fraud Probability:</strong> {{ fraud_probability|floatformat:2 }}</p>
+            <p><strong>Transaction Status:</strong>
+                <span class="{% if is_fraud %}text-danger{% else %}text-success{% endif %}">
+                    {% if is_fraud %}
+                        Fraudulent
+                    {% else %}
+                        Legitimate
+                    {% endif %}
+                </span>
+            </p>
+
+            <h3>Details of the Entered Transaction:</h3>
+            <ul class="list-group mt-3">
+                {% for key, value in entered_features.items %}
+                <li class="list-group-item">
+                    <strong>{{ key|title }}:</strong> {{ value }}
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="button-container">
+
+                <a href="{% url 'predict_fraud' %}" class="cta-button">Make Another Prediction<span class="arrow-icon">→</span></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
